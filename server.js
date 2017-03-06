@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 var exphbs = require('express-handlebars');
 
-app.engine('handlebars', exphbs({ defaultLayout: 'main'}));
+app.engine('handlebars', exphbs({defaultLayout: 'main', extname: 'handlebars', partialsDir: [__dirname + '/views/partials']}));
 app.set('view engine', 'handlebars');
 
 // static directory
@@ -75,11 +75,9 @@ app.get("/", function(req, res) {
     var $ = cheerio.load(html);
     
     $("p.title").each(function(i, element) {
-
       
       var result = {};
 
-      
       result.title = $(this).children("a").text();
 
       result.link = $(this).children("a").attr("href");
@@ -87,10 +85,6 @@ app.get("/", function(req, res) {
     });
 
   });
-
-  res.send("Scrape Complete");
-
-  console.log(req)
 
 });
 
@@ -112,6 +106,85 @@ app.get("/articles", function(req, res) {
 
   });
 });
+
+// articles
+
+app.get("/articles/:id", function(req, res) {
+
+  Article.findOne({ "_id": req.params.id })
+
+  .populate("comments")
+
+  .exec(function(error, doc) {
+
+    if (error) {
+
+      console.log(error);
+    }
+
+    else {
+
+      res.json(doc);''
+
+    }
+
+  });
+
+});
+
+// comment real quick
+
+app.post("/articles/:id", function(req, res) {
+
+  var newComment = new Comment(req.body);
+
+  newNote.save(function(error, doc) {
+
+    if (error) {
+
+      console.log(error);
+
+    } else {
+
+      Article.findOneAndUpdate({ "_id": req.params.id }, { "note": doc._id })
+
+      // Execute the above query
+
+      .exec(function(err, doc) {
+
+        if (err) {
+
+          console.log(err);
+        }
+        else {
+
+          res.send(doc);
+        }
+
+      });
+    }
+  });
+});
+
+app.post("/delete/:id", function (request, response) {
+
+  Comment.find(
+
+    {"_id": request.params.id}.remove().exec, function (error) {
+
+      if (err) {
+
+        console.log(err);
+
+      }
+      else {
+
+        res.send();
+
+      }
+
+    });
+})
 
 // listener
 
