@@ -7,10 +7,10 @@ var logger = require('morgan');
 
 var PORT = process.env.PORT || 3000;
 
-// Requiring our Note and Article models
+// requiring our Note and Article models
 
 var Comment = require("./models/comment.js");
-var Article = require("./models/article.js");
+var Articles = require("./models/article.js");
 
 // this makes scraping possible
 
@@ -66,10 +66,57 @@ db.once("open", function() {
 
 });
 
+// routes using 18.3 activities
+
+app.get("/", function(req, res) {
+  
+  request("https://www.reddit.com/r/webdev/", function(error, response, html) {
+    
+    var $ = cheerio.load(html);
+    
+    $("p.title").each(function(i, element) {
+
+      
+      var result = {};
+
+      
+      result.title = $(this).children("a").text();
+
+      result.link = $(this).children("a").attr("href");
+
+    });
+
+  });
+
+  res.send("Scrape Complete");
+
+  console.log(req)
+
+});
+
+app.get("/articles", function(req, res) {
+  
+  Article.find({}, function(error, doc) {
+    
+    if (error) {
+
+      console.log(error);
+
+    }
+    
+    else {
+
+      res.json(doc);
+
+    }
+
+  });
+});
+
 // listener
 
 app.listen(3000, function() {
 
-  console.log("localhost:3000");
+  console.log("App running on port 3000!");
 
 });
