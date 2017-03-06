@@ -29,31 +29,8 @@ $(document).on("click", "p", function() {
   })
 
     .done(function(data) {
-
-      console.log(data);
-
-      // The title of the article
-
-      $("#comments").append("<h2>" + data.title + "</h2>");
-
-      $("#comments").append("<input id='titleinput' name='title' >");
-
-      $("#comments").append("<textarea id='bodyinput' name='body'></textarea>");
-
-      $("#comments").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
-
-      $("#comments").append("<button data-id='" + data._id + "' id='deletenote'>Delete Note</button>");
-
-      if (data.comments) {
-
-        $("#titleinput").val(data.note.title);
-
-        $("#bodyinput").val(data.note.body);
-      }
-    });
+      
 });
-
-// When you click the savenote button
 
 $(document).on("click", "#savecomment", function() {
 
@@ -112,5 +89,5 @@ $(document).on("click", "#deletecomment", function() {
 
   $("#titleinput").val("");
   $("#bodyinput").val("");
-  
+
 });

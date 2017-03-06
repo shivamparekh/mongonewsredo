@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 var exphbs = require('express-handlebars');
 
-app.engine('handlebars', exphbs({defaultLayout: 'main', extname: 'handlebars', partialsDir: [__dirname + '/views/partials']}));
+app.engine('handlebars', exphbs({ defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 // static directory
@@ -75,7 +75,7 @@ app.get("/", function(req, res) {
     var $ = cheerio.load(html);
     
     $("p.title").each(function(i, element) {
-      
+
       var result = {};
 
       result.title = $(this).children("a").text();
@@ -85,6 +85,8 @@ app.get("/", function(req, res) {
     });
 
   });
+
+  res.send(res);
 
 });
 
@@ -138,7 +140,7 @@ app.post("/articles/:id", function(req, res) {
 
   var newComment = new Comment(req.body);
 
-  newNote.save(function(error, doc) {
+  newComment.save(function(error, doc) {
 
     if (error) {
 
